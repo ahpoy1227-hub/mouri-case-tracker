@@ -30,11 +30,10 @@
       color: var(--text-main);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", sans-serif;
       min-height: 100vh;
-      min-height: -webkit-fill-available;
       overflow-x: hidden;
     }
 
-    /* 启动开屏动画层 */
+    /* 开屏动画层 */
     #splash-layer {
       position: fixed;
       inset: 0;
@@ -49,12 +48,12 @@
 
     .skip-btn {
       position: absolute;
-      top: 20px;
-      right: 20px;
-      background: rgba(255, 255, 255, 0.12);
+      top: 24px;
+      right: 24px;
+      background: rgba(255, 255, 255, 0.15);
       border: 1px solid rgba(255, 255, 255, 0.25);
-      color: #cbd5e1;
-      padding: 6px 14px;
+      color: #f1f5f9;
+      padding: 7px 16px;
       border-radius: 20px;
       font-size: 13px;
       cursor: pointer;
@@ -64,23 +63,22 @@
 
     .anim-stage {
       width: 100%;
-      max-width: 420px;
-      height: 560px;
+      max-width: 520px;
+      height: 600px;
       position: relative;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
     }
 
-    /* 镜头一：全景建筑与底商波洛咖啡馆 */
+    /* 镜头一：全景 */
     .scene-panoramic {
-      width: 250px;
-      height: 360px;
-      border-radius: 10px;
+      width: 270px;
+      height: 380px;
+      border-radius: 12px;
       position: relative;
-      background: linear-gradient(180deg, #162035 0%, #0d1424 100%);
-      box-shadow: 0 0 40px rgba(0,0,0,0.9);
+      background: linear-gradient(180deg, #172338 0%, #0d1424 100%);
+      box-shadow: 0 0 50px rgba(0,0,0,0.9);
       border: 2px solid #28354d;
       overflow: hidden;
       transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s;
@@ -89,31 +87,31 @@
     .building-sign {
       position: absolute;
       left: 12px;
-      top: 50px;
+      top: 55px;
       writing-mode: vertical-rl;
       background: #1d4ed8;
       color: #fff;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 700;
       letter-spacing: 3px;
-      padding: 6px 3px;
+      padding: 8px 3px;
       border-radius: 2px;
     }
 
     .floor-2 {
       position: absolute;
-      top: 50px;
-      left: 36px;
+      top: 55px;
+      left: 38px;
       right: 18px;
-      height: 80px;
+      height: 85px;
       background: #fef08a;
-      box-shadow: inset 0 0 15px rgba(234, 179, 8, 0.4), 0 0 25px rgba(254, 240, 138, 0.35);
+      box-shadow: inset 0 0 15px rgba(234, 179, 8, 0.4), 0 0 30px rgba(254, 240, 138, 0.4);
       border-radius: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: #1e293b;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 900;
       letter-spacing: 2px;
     }
@@ -121,9 +119,9 @@
     .floor-1-poirot {
       position: absolute;
       bottom: 25px;
-      left: 36px;
+      left: 38px;
       right: 18px;
-      height: 90px;
+      height: 95px;
       background: #111827;
       border: 1px solid #374151;
       border-radius: 4px;
@@ -135,7 +133,7 @@
 
     .poirot-awning {
       width: 100%;
-      height: 20px;
+      height: 22px;
       background: repeating-linear-gradient(90deg, #e63946, #e63946 12px, #f8fafc 12px, #f8fafc 24px);
     }
 
@@ -144,19 +142,19 @@
       font-style: italic;
       font-weight: bold;
       font-size: 12px;
-      margin-top: 5px;
+      margin-top: 6px;
     }
 
     .poirot-window {
       width: 80%;
-      height: 35px;
+      height: 38px;
       background: #fde047;
       margin-top: 5px;
       border-radius: 2px;
       opacity: 0.9;
     }
 
-    /* 镜头二与三：推门与人物剪影 */
+    /* 镜头二与三：还原图二的开门高精度矢量场景 */
     .door-scene {
       position: absolute;
       inset: 0;
@@ -168,135 +166,139 @@
       transition: opacity 0.6s ease;
     }
 
-    .door-frame {
-      width: 230px;
-      height: 360px;
-      background: #151d30;
+    .art-frame {
+      width: 320px;
+      height: 480px;
+      background: #090e1a;
       border: 3px solid #2b3954;
-      border-radius: 6px;
+      border-radius: 10px;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 0 40px rgba(0,0,0,0.8);
+      box-shadow: 0 0 50px rgba(0,0,0,0.9);
     }
 
-    .inner-room {
+    /* 门内暖光房间 */
+    .room-bg {
       position: absolute;
       inset: 0;
-      background: #fef08a;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      align-items: center;
-      box-shadow: 0 0 50px rgba(254, 240, 138, 0.6);
+      background: #fed766;
+      box-shadow: inset 0 0 60px rgba(245, 158, 11, 0.4);
     }
 
-    .door-panel {
+    /* 图二室内装饰小细节 */
+    .plant-shelf {
       position: absolute;
-      inset: 0;
-      background: #1e293b;
-      border-right: 2px solid #334155;
-      transform-origin: left;
-      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      right: 14px;
+      top: 140px;
+      width: 45px;
+      height: 100px;
+      background: #92400e;
+      border-radius: 4px;
+      opacity: 0.85;
+    }
+
+    /* 高精度人物剪影与反光镜片层 */
+    .svg-characters {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* 真实的开门板 */
+    .door-leaf-wrap {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      perspective: 1000px;
       z-index: 5;
+    }
+
+    .door-leaf {
+      width: 100%;
+      height: 100%;
+      background: #172033;
+      transform-origin: left;
+      transition: transform 1.3s cubic-bezier(0.16, 1, 0.3, 1);
+      border-right: 4px solid #334155;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      padding-top: 40px;
+      position: relative;
     }
 
-    .door-glass {
-      width: 130px;
-      height: 130px;
+    .door-window-grid {
+      width: 190px;
+      height: 220px;
       background: rgba(254, 240, 138, 0.35);
-      border: 2px solid #475569;
+      border: 3px solid #475569;
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
-      gap: 2px;
-      padding: 2px;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 3px;
+      padding: 3px;
     }
-    .door-glass div { background: rgba(254, 240, 138, 0.2); }
+    .door-window-grid div { background: rgba(254, 240, 138, 0.25); }
 
-    .door-knob {
-      width: 14px;
-      height: 14px;
+    .door-gold-handle {
+      position: absolute;
+      right: 20px;
+      top: 55%;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       background: #f59e0b;
-      position: absolute;
-      right: 16px;
-      top: 50%;
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.8);
     }
 
-    .knock-text {
+    .knock-sfx {
       position: absolute;
       color: #ef4444;
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 900;
       letter-spacing: 2px;
-      top: 30%;
-      right: 20px;
+      top: 25%;
+      right: 35px;
       z-index: 10;
       opacity: 0;
       transform: scale(0.6);
-      text-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
+      text-shadow: 0 0 10px rgba(239, 68, 68, 0.9);
+      transition: transform 0.2s, opacity 0.2s;
     }
 
-    .silhouettes {
-      display: flex;
-      align-items: flex-end;
-      gap: 8px;
-      margin-bottom: 20px;
-      position: relative;
-    }
-
-    .sil-mouri {
-      width: 50px;
-      height: 140px;
-      background: #0f172a;
-      clip-path: polygon(25% 0, 75% 0, 85% 20%, 95% 45%, 80% 100%, 20% 100%, 5% 45%, 15% 20%);
-    }
-
-    .sil-ran {
-      width: 45px;
-      height: 130px;
-      background: #0f172a;
-      clip-path: polygon(40% 0, 75% 0, 95% 30%, 75% 100%, 25% 100%, 10% 40%, 20% 10%);
-    }
-
-    .sil-conan {
-      width: 40px;
-      height: 70px;
-      background: #0f172a;
-      border-radius: 6px 6px 0 0;
-      position: relative;
-    }
-
-    .conan-glasses {
+    /* 还原图二漫画对话气泡 */
+    .comic-bubble {
       position: absolute;
-      top: 14px;
-      left: 5px;
-      right: 5px;
-      height: 12px;
-      border: 2px solid #ffffff;
-      background: #ffffff;
-      box-shadow: 0 0 10px #ffffff;
-      border-radius: 2px;
-    }
-
-    .dialogue-balloon {
-      position: absolute;
-      top: -42px;
+      top: 24px;
+      right: 14px;
       background: #ffffff;
       color: #0f172a;
-      padding: 6px 12px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 800;
-      white-space: nowrap;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      border: 3px solid #000000;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1.3;
+      text-align: center;
+      z-index: 10;
       opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.4s, transform 0.4s;
+      transform: translateY(12px) scale(0.9);
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s;
+    }
+    .comic-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      right: 28px;
+      border-width: 12px 10px 0 0;
+      border-style: solid;
+      border-color: #000000 transparent transparent transparent;
     }
 
     /* 主界面 */
@@ -662,6 +664,8 @@
   <div id="splash-layer">
     <button class="skip-btn" onclick="finishSplash()">跳过 ➔</button>
     <div class="anim-stage">
+      
+      <!-- 镜头1：全景毛利大楼+波洛咖啡馆 -->
       <div id="panoramic-scene" class="scene-panoramic">
         <div class="building-sign">毛利探偵事務所</div>
         <div class="floor-2">2F 事務所</div>
@@ -672,27 +676,68 @@
         </div>
       </div>
 
+      <!-- 镜头2与3：高精度矢量还原图二插画分镜 -->
       <div id="door-scene" class="door-scene">
-        <div class="door-frame">
-          <div class="inner-room">
-            <div id="dialogue-box" class="dialogue-balloon">欢迎来到毛利侦探事务所！</div>
-            <div class="silhouettes">
-              <div class="sil-ran"></div>
-              <div class="sil-conan">
-                <div class="conan-glasses"></div>
+        <div class="art-frame">
+          <div class="room-bg"></div>
+          <div class="plant-shelf"></div>
+
+          <!-- 漫画对话框 -->
+          <div id="comic-bubble" class="comic-bubble">
+            欢迎来到毛利<br>侦探事务所！
+          </div>
+
+          <!-- 精确重绘的柯南/小兰/小五郎高质感剪影与发光镜片 -->
+          <svg class="svg-characters" viewBox="0 0 320 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- 毛利小五郎 (领带、标志性胡须与发型、伸手迎客姿态) -->
+            <path d="M228 170 C234 160 248 152 260 156 C262 165 258 174 254 180 C265 180 270 190 266 200 C258 206 250 205 242 203 L242 215 L222 215 L222 200 C216 195 212 185 218 174 Z" fill="#111827"/>
+            <path d="M208 215 L276 215 L296 280 L315 260 L320 270 L292 305 L285 480 L195 480 L195 320 L180 280 L198 270 L208 215 Z" fill="#111827"/>
+            <!-- 小五郎小胡子 -->
+            <path d="M235 192 Q242 190 248 192 Q242 195 235 192 Z" fill="#374151"/>
+
+            <!-- 毛利兰 (标志性独角发型与身形) -->
+            <!-- 头部与标志性尖角发型 -->
+            <path d="M152 176 C145 168 140 155 148 144 C158 130 178 128 185 142 C194 135 208 140 205 160 C202 176 190 188 178 190 L178 206 L158 206 L158 188 Z" fill="#111827"/>
+            <!-- 标志性前冲长发尖角 (小兰角) -->
+            <path d="M178 142 L206 126 C198 142 194 154 186 160 Z" fill="#111827"/>
+            <!-- 身体剪影 -->
+            <path d="M154 206 L188 206 L198 330 L192 480 L158 480 L150 330 Z" fill="#111827"/>
+
+            <!-- 江户川柯南 (标志性刺猬发型、西装短裤与高反光发光镜片) -->
+            <!-- 头部轮廓与呆毛发型 -->
+            <path d="M170 348 C160 332 172 314 188 316 C202 312 218 322 216 340 C222 344 220 354 214 360 C212 374 198 382 186 380 C172 380 162 368 165 352 Z" fill="#111827"/>
+            <path d="M166 324 L154 316 C162 328 165 334 168 338 Z" fill="#111827"/>
+            <!-- 身体、领结与小短裤 -->
+            <path d="M170 380 L208 380 L216 430 L214 480 L168 480 L164 430 Z" fill="#111827"/>
+            <!-- 经典红色小领结 -->
+            <path d="M184 380 L194 384 L184 388 L188 384 Z M194 384 L204 380 L200 384 L204 388 Z" fill="#ef4444"/>
+
+            <!-- 核心：真实弧度柯南眼镜与刺眼白光反光 -->
+            <rect x="174" y="342" width="16" height="13" rx="3" fill="#ffffff" stroke="#111827" stroke-width="2" style="filter: drop-shadow(0 0 6px #ffffff);"/>
+            <rect x="194" y="342" width="16" height="13" rx="3" fill="#ffffff" stroke="#111827" stroke-width="2" style="filter: drop-shadow(0 0 6px #ffffff);"/>
+            <line x1="190" y1="348" x2="194" y2="348" stroke="#ffffff" stroke-width="2"/>
+            <!-- 镜片白色反光高光折线 -->
+            <line x1="176" y1="352" x2="186" y2="345" stroke="#38bdf8" stroke-width="1.5"/>
+            <line x1="196" y1="352" x2="206" y2="345" stroke="#38bdf8" stroke-width="1.5"/>
+          </svg>
+
+          <!-- 开合大门 -->
+          <div class="door-leaf-wrap">
+            <div id="door-leaf" class="door-leaf">
+              <div class="door-window-grid">
+                <div></div><div></div><div></div>
+                <div></div><div></div><div></div>
+                <div></div><div></div><div></div>
+                <div></div><div></div><div></div>
               </div>
-              <div class="sil-mouri"></div>
+              <div class="door-gold-handle"></div>
             </div>
           </div>
-          <div id="door-leaf" class="door-panel">
-            <div class="door-glass">
-              <div></div><div></div><div></div><div></div>
-            </div>
-            <div class="door-knob"></div>
-          </div>
-          <div id="knock-sfx" class="knock-text">咚！咚！</div>
+
+          <div id="knock-sfx" class="knock-sfx">咚！咚！</div>
         </div>
       </div>
+
     </div>
   </div>
 
@@ -898,13 +943,15 @@
       const doorScene = document.getElementById('door-scene');
       const doorLeaf = document.getElementById('door-leaf');
       const knockSfx = document.getElementById('knock-sfx');
-      const dialogueBox = document.getElementById('dialogue-box');
+      const comicBubble = document.getElementById('comic-bubble');
 
+      // 阶段 1：全景镜头拉近
       setTimeout(() => {
         panoramic.style.transform = "scale(2.2) translateY(-40px)";
         panoramic.style.opacity = "0";
       }, 1200);
 
+      // 阶段 2：切换到二楼大门，敲门 "咚！咚！"
       setTimeout(() => {
         panoramic.style.display = "none";
         doorScene.style.opacity = "1";
@@ -912,19 +959,22 @@
         knockSfx.style.transform = "scale(1)";
       }, 1800);
 
+      // 阶段 3：推开大门，室内暖光涌出，展现剪影
       setTimeout(() => {
         knockSfx.style.display = "none";
-        doorLeaf.style.transform = "perspective(800px) rotateY(-80deg)";
-      }, 2600);
+        doorLeaf.style.transform = "perspective(900px) rotateY(-82deg)";
+      }, 2500);
 
+      // 阶段 4：弹出还原图二的漫画气泡
       setTimeout(() => {
-        dialogueBox.style.opacity = "1";
-        dialogueBox.style.transform = "translateY(0)";
+        comicBubble.style.opacity = "1";
+        comicBubble.style.transform = "translateY(0) scale(1)";
       }, 3300);
 
+      // 阶段 5：淡入主界面
       setTimeout(() => {
         finishSplash();
-      }, 4300);
+      }, 4500);
     }
 
     function finishSplash() {
@@ -945,7 +995,7 @@
       document.getElementById('door-leaf').style.transform = 'none';
       document.getElementById('knock-sfx').style.display = 'block';
       document.getElementById('knock-sfx').style.opacity = '0';
-      document.getElementById('dialogue-box').style.opacity = '0';
+      document.getElementById('comic-bubble').style.opacity = '0';
       runSplashAnimation();
     }
 
