@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>毛利侦探事务所 · 案卷打卡系统</title>
+  <style>
+    :root {
+      --bg-dark: #080d1a;
+      --card-bg: #121929;
+      --card-locked: #0d1320;
+      --accent-red: #e63946;
+      --accent-blue: #38bdf8;
+      --accent-gold: #facc15;
+      --text-main: #f8fafc;
+      --text-muted: #64748b;
+      --border-color: #1e293b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", sans-serif;
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      overflow-x: hidden;
+    }
+
+    /* 启动开屏动画层 */
+    #splash-layer {
+      position: fixed;
+      inset: 0;
+      background: #050811;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: opacity 0.6s ease, visibility 0.6s;
+    }
+
+    .skip-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #cbd5e1;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+      z-index: 1001;
+      backdrop-filter: blur(8px);
+    }
+
+    .anim-stage {
+      width: 100%;
+      max-width: 420px;
+      height: 560px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 镜头一：全景建筑与底商波洛咖啡馆 */
+    .scene-panoramic {
+      width: 250px;
+      height: 360px;
+      border-radius: 10px;
+      position: relative;
+      background: linear-gradient(180deg, #162035 0%, #0d1424 100%);
+      box-shadow: 0 0 40px rgba(0,0,0,0.9);
+      border: 2px solid #28354d;
+      overflow: hidden;
+      transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s;
+    }
+
+    .building-sign {
+      position: absolute;
+      left: 12px;
+      top: 50px;
+      writing-mode: vertical-rl;
+      background: #1d4ed8;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      padding: 6px 3px;
+      border-radius: 2px;
+    }
+
+    .floor-2 {
+      position: absolute;
+      top: 50px;
+      left: 36px;
+      right: 18px;
+      height: 80px;
+      background: #fef08a;
+      box-shadow: inset 0 0 15px rgba(234, 179, 8, 0.4), 0 0 25px rgba(254, 240, 138, 0.35);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1e293b;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .floor-1-poirot {
+      position: absolute;
+      bottom: 25px;
+      left: 36px;
+      right: 18px;
+      height: 90px;
+      background: #111827;
+      border: 1px solid #374151;
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .poirot-awning {
+      width: 100%;
+      height: 20px;
+      background: repeating-linear-gradient(90deg, #e63946, #e63946 12px, #f8fafc 12px, #f8fafc 24px);
+    }
+
+    .poirot-name {
+      color: #fef08a;
+      font-style: italic;
+      font-weight: bold;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .poirot-window {
+      width: 80%;
+      height: 35px;
+      background: #fde047;
+      margin-top: 5px;
+      border-radius: 2px;
+      opacity: 0.9;
+    }
+
+    /* 镜头二与三：推门与人物剪影 */
+    .door-scene {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.6s ease;
+    }
+
+    .door-frame {
+      width: 230px;
+      height: 360px;
+      background: #151d30;
+      border: 3px solid #2b3954;
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 40px rgba(0,0,0,0.8);
+    }
+
+    .inner-room {
+      position: absolute;
+      inset: 0;
+      background: #fef08a;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      box-shadow: 0 0 50px rgba(254, 240, 138, 0.6);
+    }
+
+    .door-panel {
+      position: absolute;
+      inset: 0;
+      background: #1e293b;
+      border-right: 2px solid #334155;
+      transform-origin: left;
+      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .door-glass {
+      width: 130px;
+      height: 130px;
+      background: rgba(254, 240, 138, 0.35);
+      border: 2px solid #475569;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 2px;
+      padding: 2px;
+    }
+    .door-glass div { background: rgba(254, 240, 138, 0.2); }
+
+    .door-knob {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #f59e0b;
+      position: absolute;
+      right: 16px;
+      top: 50%;
+    }
+
+    .knock-text {
+      position: absolute;
+      color: #ef4444;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      top: 30%;
+      right: 20px;
+      z-index: 10;
+      opacity: 0;
+      transform: scale(0.6);
+      text-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
+    }
+
+    .silhouettes {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .sil-mouri {
+      width: 50px;
+      height: 140px;
+      background: #0f172a;
+      clip-path: polygon(25% 0, 75% 0, 85% 20%, 95% 45%, 80% 100%, 20% 100%, 5% 45%, 15% 20%);
+    }
+
+    .sil-ran {
+      width: 45px;
+      height: 130px;
+      background: #0f172a;
+      clip-path: polygon(40% 0, 75% 0, 95% 30%, 75% 100%, 25% 100%, 10% 40%, 20% 10%);
+    }
+
+    .sil-conan {
+      width: 40px;
+      height: 70px;
+      background: #0f172a;
+      border-radius: 6px 6px 0 0;
+      position: relative;
+    }
+
+    .conan-glasses {
+      position: absolute;
+      top: 14px;
+      left: 5px;
+      right: 5px;
+      height: 12px;
+      border: 2px solid #ffffff;
+      background: #ffffff;
+      box-shadow: 0 0 10px #ffffff;
+      border-radius: 2px;
+    }
+
+    .dialogue-balloon {
+      position: absolute;
+      top: -42px;
+      background: #ffffff;
+      color: #0f172a;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.4s, transform 0.4s;
+    }
+
+    /* 主界面 */
+    .app-root {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 16px 16px 80px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .search-box {
+      flex: 1;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      background: #131c2e;
+      border: 1px solid #23314a;
+      color: #fff;
+      padding: 9px 14px 9px 34px;
+      border-radius: 20px;
+      font-size: 13px;
+      outline: none;
+    }
+    .search-box input:focus { border-color: var(--accent-blue); }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      background: #131c2e;
+      border: 1px solid #23314a;
+      color: #cbd5e1;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .user-avatar-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid #334155;
+      background: #1e293b;
+      cursor: pointer;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .user-avatar-btn img { width: 100%; height: 100%; object-fit: cover; }
+
+    .mode-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 14px;
+      font-size: 12px;
+    }
+    .mode-tag {
+      background: #1e293b;
+      color: var(--accent-blue);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .primary-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .primary-tab {
+      background: #101726;
+      border: 1px solid #1f2c42;
+      color: #94a3b8;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .primary-tab.active {
+      background: #172554;
+      border-color: #3b82f6;
+      color: #60a5fa;
+    }
+
+    .filter-tags {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+
+    .filter-pill {
+      background: #101726;
+      border: 1px solid #1e293b;
+      color: #94a3b8;
+      padding: 5px 12px;
+      border-radius: 16px;
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .filter-pill.active {
+      background: #38bdf8;
+      border-color: #38bdf8;
+      color: #080d1a;
+      font-weight: 700;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid #1f2c42;
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .card.unlocked {
+      border-color: #3b82f6;
+      background: #111a30;
+      box-shadow: 0 4px 18px rgba(59, 130, 246, 0.12);
+    }
+
+    .card.locked {
+      background: var(--card-locked);
+      border: 1px dashed #23314a;
+      opacity: 0.85;
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .card-id {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--accent-blue);
+    }
+
+    .stamp-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #94a3b8;
+    }
+    .card.unlocked .stamp-btn {
+      color: var(--accent-gold);
+      background: rgba(250, 204, 21, 0.1);
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    .card-meta-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+
+    .tag-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #cbd5e1;
+    }
+
+    .platform-badge {
+      font-size: 10px;
+      padding: 2px 5px;
+      border-radius: 3px;
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+    }
+
+    .rating-val {
+      color: var(--accent-gold);
+      font-weight: 700;
+    }
+
+    .desc-toggle {
+      font-size: 11px;
+      color: #64748b;
+      cursor: pointer;
+      margin-top: auto;
+      padding-top: 6px;
+      border-top: 1px solid #1a2336;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .desc-content {
+      display: none;
+      font-size: 11px;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-top: 6px;
+      background: rgba(0,0,0,0.25);
+      padding: 6px;
+      border-radius: 6px;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      z-index: 500;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-card {
+      background: #111827;
+      border: 1px solid #28354d;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 380px;
+      padding: 18px;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-close {
+      cursor: pointer;
+      color: #64748b;
+      font-size: 18px;
+    }
+
+    .setting-item {
+      margin-bottom: 14px;
+    }
+    .setting-label {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .action-btn {
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #e5e7eb;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .action-btn.active {
+      background: #2563eb;
+      border-color: #3b82f6;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .primary-btn {
+      width: 100%;
+      background: var(--accent-red);
+      border: none;
+      color: #fff;
+      padding: 9px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    .input-field {
+      width: 100%;
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #fff;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      outline: none;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 开场分镜动画层 -->
+  <div id="splash-layer">
+    <button class="skip-btn" onclick="finishSplash()">跳过 ➔</button>
+    <div class="anim-stage">
+      <div id="panoramic-scene" class="scene-panoramic">
+        <div class="building-sign">毛利探偵事務所</div>
+        <div class="floor-2">2F 事務所</div>
+        <div class="floor-1-poirot">
+          <div class="poirot-awning"></div>
+          <div class="poirot-name">Café Poirot</div>
+          <div class="poirot-window"></div>
+        </div>
+      </div>
+
+      <div id="door-scene" class="door-scene">
+        <div class="door-frame">
+          <div class="inner-room">
+            <div id="dialogue-box" class="dialogue-balloon">欢迎来到毛利侦探事务所！</div>
+            <div class="silhouettes">
+              <div class="sil-ran"></div>
+              <div class="sil-conan">
+                <div class="conan-glasses"></div>
+              </div>
+              <div class="sil-mouri"></div>
+            </div>
+          </div>
+          <div id="door-leaf" class="door-panel">
+            <div class="door-glass">
+              <div></div><div></div><div></div><div></div>
+            </div>
+            <div class="door-knob"></div>
+          </div>
+          <div id="knock-sfx" class="knock-text">咚！咚！</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主交互界面 -->
+  <div class="app-root">
+    <header>
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="global-search" placeholder="搜案卷名 / 集数 / 犯人 / 关键词..." oninput="handleSearch()">
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" title="系统设置" onclick="openModal('settings-modal')">⚙</button>
+        <div class="user-avatar-btn" id="header-avatar" onclick="openModal('user-modal')" title="侦探名片">👤</div>
+      </div>
+    </header>
+
+    <div class="mode-banner">
+      <div>
+        <span>当前环境：</span>
+        <span class="mode-tag" id="current-mode-label">国内平台拆分版 (优酷/爱奇艺/腾讯)</span>
+      </div>
+      <span style="color: #64748b; cursor: pointer;" onclick="openModal('settings-modal')">切换 ⚙</span>
+    </div>
+
+    <div class="primary-tabs">
+      <div class="primary-tab active" id="tab-movies" onclick="switchPrimaryTab('movies')">🎬 剧场版 (Movies)</div>
+      <div class="primary-tab" id="tab-tv" onclick="switchPrimaryTab('tv')">📺 TV 动画版 (TV Series)</div>
+    </div>
+
+    <div class="filter-tags" id="sub-filters"></div>
+    <div class="cards-grid" id="cards-container"></div>
+  </div>
+
+  <!-- 设置弹窗 -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal-card">
+      <div class="modal-title">
+        <span>系统设置 (Preferences)</span>
+        <span class="modal-close" onclick="closeModal('settings-modal')">✕</span>
+      </div>
+
+      <div class="setting-item">
+        <label class="setting-label">版本环境切换：</label>
+        <div class="btn-group">
+          <div class="action-btn" id="btn-mode-cn" onclick="setVersionMode('cn')">🇨🇳 国内平台版</div>
+          <div class="action-btn" id="btn-mode-jp" onclick="setVersionMode('jp')">🇯🇵 日本本地原版</div>
+        </div>
+      </div>
+
+      <div class="setting-item">
+        <label class="setting-label">打卡数据管理：</label>
+        <div class="btn-group">
+          <div class="action-btn" onclick="exportData()">备份记录</div>
+          <div class="action-btn" style="color: #f87171;" onclick="clearAllData()">清空打卡</div>
+        </div>
+      </div>
+
+      <div class="setting-item">
+        <label class="setting-label">意见反馈：</label>
+        <button class="action-btn" style="width: 100%;" onclick="openFeedback()">📮 发送委托信给开发者</button>
+      </div>
+
+      <button class="primary-btn" onclick="replaySplash()">重温开门动画</button>
+    </div>
+  </div>
+
+  <!-- 用户登录 / 名片弹窗 -->
+  <div class="modal-overlay" id="user-modal">
+    <div class="modal-card">
+      <div class="modal-title">
+        <span id="user-modal-title">侦探档案登记</span>
+        <span class="modal-close" onclick="closeModal('user-modal')">✕</span>
+      </div>
+
+      <div id="login-form-area">
+        <label class="setting-label">侦探代号 (昵称)：</label>
+        <input type="text" class="input-field" id="username-input" placeholder="例如：毛利小五郎、工藤新一...">
+        
+        <label class="setting-label">选择头像：</label>
+        <div style="display: flex; gap: 10px; margin-bottom: 12px; align-items: center;">
+          <input type="file" id="avatar-file" accept="image/*" style="font-size: 11px; color: #94a3b8;">
+        </div>
+
+        <button class="primary-btn" onclick="handleLogin()">登记并开启动态打卡</button>
+      </div>
+
+      <div id="profile-area" style="display: none; text-align: center;">
+        <div id="profile-avatar-preview" style="width: 50px; height: 50px; border-radius: 50%; margin: 0 auto 10px; background: #1e293b; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 20px;"></div>
+        <h4 id="profile-name-display" style="margin-bottom: 4px;"></h4>
+        <p style="font-size: 12px; color: var(--accent-blue); margin-bottom: 14px;">
+          当前已破案：<strong id="user-solved-count">0</strong> 部
+        </p>
+        <button class="action-btn" style="width: 100%; color: #f87171;" onclick="handleLogout()">注销档案</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const MOVIES_DATABASE = [
+      {
+        id: "M01",
+        cn: { title: "引爆摩天楼", platform: "优酷·正片", desc: "知名建筑师设计的摩天楼被安装炸弹，柯南与小兰展开生死剪线倒计时。" },
+        jp: { title: "時計じかけの摩天楼", platform: "官方全篇", desc: "謎の男から届いた爆破予告。蘭が待つ高層ビルが爆破ターゲットに！" },
+        tag: "硬核推理", rating: "8.4"
+      },
+      {
+        id: "M02",
+        cn: { title: "第十四个目标", platform: "优酷·正片", desc: "按照扑克牌数字顺序连续暗杀毛利小五郎周围朋友的连环大案。" },
+        jp: { title: "14番目の標的", platform: "官方全篇", desc: "トランプの数字に合わせて小五郎の関係者が次々と襲われる！" },
+        tag: "硬核推理", rating: "8.2"
+      },
+      {
+        id: "M03",
+        cn: { title: "世纪末的魔术师", platform: "腾讯·正片", desc: "怪盗基德盗取罗曼诺夫王朝复活节彩蛋，史前神秘组织现身。" },
+        jp: { title: "世紀末の魔術師", platform: "官方全篇", desc: "ロマノフ王朝の秘宝インペリアル・イースター・エッグを巡る基徳との対決。" },
+        tag: "怪盗基德", rating: "8.6"
+      },
+      {
+        id: "M04",
+        cn: { title: "瞳孔中的暗杀者", platform: "优酷·仅预告", desc: "【优酷暂下架】小兰目睹警员被枪击受到冲击失忆，暗杀者锁定小兰！" },
+        jp: { title: "瞳の中の暗殺者", platform: "官方全篇", desc: "警察官連続射殺事件を目撃した蘭が記憶を失い、犯人に命を狙われる。" },
+        tag: "新兰羁绊", rating: "8.7"
+      },
+      {
+        id: "M05",
+        cn: { title: "通往天国的倒计时", platform: "优酷·正片", desc: "双子大厦爆炸起火，黑衣组织琴酒、伏特加登场，飞车飞越双塔！" },
+        jp: { title: "天国へのカウントダウン", platform: "官方全篇", desc: "ツインタワービルで巻き起こる爆破と、黒ずくめの組織の影。" },
+        tag: "黑衣组织", rating: "8.8"
+      },
+      {
+        id: "M06",
+        cn: { title: "贝克街的亡灵", platform: "爱奇艺·正片", desc: "进入茧游戏虚拟重现 19 世纪伦敦，挑战真实开膛手杰克！" },
+        jp: { title: "ベイカー街の亡霊", platform: "官方全篇", desc: "体感型ゲーム「コクーン」でロンドンに潜入、ジャック・ザ・リッパーを追う！" },
+        tag: "硬核推理", rating: "9.1"
+      },
+      {
+        id: "M20",
+        cn: { title: "纯黑的恶梦", platform: "优酷·正片", desc: "失忆卧底库拉索、红蓝宿敌安室透与赤井秀一摩天轮肉搏大决战。" },
+        jp: { title: "純黒の悪夢", platform: "官方全篇", desc: "記憶喪失のキュラソーと、赤井・安室・組織が入り乱れる大決戦！" },
+        tag: "大动作", rating: "7.2"
+      },
+      {
+        id: "M26",
+        cn: { title: "黑铁的鱼影", platform: "全网正片", desc: "太平洋浮标监控中心，灰原哀真实身份危机爆发，跨海深潜对决！" },
+        jp: { title: "黒鉄の魚影", platform: "官方全篇", desc: "パシフィック・ブイを巡り、灰原哀の正体が組織に迫る！" },
+        tag: "黑衣组织", rating: "7.9"
+      },
+      {
+        id: "M27",
+        cn: { title: "百万美元的五棱星", platform: "国内平台待上架", desc: "北海道函馆夺刀大戏，服部平次与怪盗基德的身世终极秘密！" },
+        jp: { title: "100万ドルの五稜星", platform: "剧场上映", desc: "函館を舞台に土方歳三の日本刀を巡るミステリー！" },
+        tag: "怪盗基德", rating: "7.6"
+      },
+      {
+        id: "M28",
+        cn: { title: "2025 剧场版 (长野县雪山篇)", platform: "待上映", desc: "长野三人组大和敢助、诸伏高明等登场，涉及黑衣组织朗姆与羽田浩司案。" },
+        jp: { title: "第28作 (長野県警·雪山)", platform: "公開予定", desc: "長野県警の猛者たちと、雪山で交錯する過去の因縁。" },
+        tag: "硬核推理", rating: "期待"
+      }
+    ];
+
+    const TV_DATABASE = [
+      {
+        id: "TV-01",
+        cn: { epDisplay: "第 35 - 36 集", searchKeys: "35 36 绷带怪人", title: "山庄绷带怪人杀人案", platform: "优酷·正片", desc: "深山别墅孤岛杀人，绷带男断桥夜袭，经典的密室与童年阴影名局。" },
+        jp: { epDisplay: "第 34 - 35 话", searchKeys: "34 35 包帯男", title: "山荘包帯男殺人事件", platform: "官方原版", desc: "山荘に現れた不気味な包帯男。吊り橋が落とされ密室と化した山荘で..." },
+        tag: "神回硬核", rating: "9.3"
+      },
+      {
+        id: "TV-02",
+        cn: { epDisplay: "第 11 集", searchKeys: "11 月光 钢琴", title: "钢琴奏鸣曲《月光》杀人事件", platform: "优酷·正片", desc: "月影岛连续杀人，让柯南立誓“不能用推理把凶手逼死”的转折之案。" },
+        jp: { epDisplay: "第 11 话 (1小时SP)", searchKeys: "11 月光", title: "ピアノソナタ『月光』殺人事件", platform: "官方原版", desc: "月影島で鳴り響く『月光』。コナンが生涯後悔し続ける伝説のエピソード。" },
+        tag: "神回硬核", rating: "9.6"
+      },
+      {
+        id: "TV-03",
+        cn: { epDisplay: "第 371 - 375 集", searchKeys: "371 372 373 374 375 满月", title: "与黑衣组织直面对决 满月之夜的双重谜案", platform: "优酷·拆分版", desc: "贝尔摩德、朱蒂、赤井秀一与新出医生身份全部揭晓的高光决战！" },
+        jp: { epDisplay: "第 345 话 (2.5小时特别篇)", searchKeys: "345 満月の夜", title: "黒の組織と真っ向勝負 満月の夜の二重ミステリー", platform: "官方合并版", desc: "2時間半スペシャル。ベルモットの正体と、幽霊船の惨劇が暴かれる！" },
+        tag: "黑衣组织主线", rating: "9.8"
+      },
+      {
+        id: "TV-04",
+        cn: { epDisplay: "第 701 - 704 集", searchKeys: "701 702 703 704 神秘列车", title: "漆黑的特快列车 (铃木特快)", platform: "优酷·拆分版", desc: "列车上的波本与雪莉正面对峙，基德华丽参与主线脱出救局。" },
+        jp: { epDisplay: "第 701 - 704 话", searchKeys: "701 702 703 704 ミステリートレイン", title: "漆黒の特急（ミステリートレイン）", platform: "官方原版", desc: "密室の車内で次々に起こる事件、波本バーボンがついに正体を現す！" },
+        tag: "世良·赤井家族", rating: "9.2"
+      },
+      {
+        id: "TV-05",
+        cn: { epDisplay: "第 982 - 985 集", searchKeys: "982 983 984 985 修学旅行", title: "红色的修学旅行 (鲜红篇·恋红篇)", platform: "优酷·正片", desc: "清水寺前新一与小兰世纪大告白，天狗杀人传说的硬核破解。" },
+        jp: { epDisplay: "第 927 - 928 话 (1小时SPx2)", searchKeys: "927 928 修学旅行", title: "紅の修学旅行（鮮紅編·恋紅編）", platform: "官方原版", desc: "新一に戻って参加した京都修学旅行！蘭との恋の行方と鞍馬天狗の謎。" },
+        tag: "新兰恋爱", rating: "9.4"
+      }
+    ];
+
+    let versionMode = localStorage.getItem('conan_ver_mode') || 'cn';
+    let currentPrimaryTab = 'movies';
+    let currentSubFilter = '全部';
+    let currentUser = JSON.parse(localStorage.getItem('conan_user_profile') || 'null');
+    let solvedRecords = new Set(JSON.parse(localStorage.getItem('conan_solved_cases') || '[]'));
+
+    function runSplashAnimation() {
+      const panoramic = document.getElementById('panoramic-scene');
+      const doorScene = document.getElementById('door-scene');
+      const doorLeaf = document.getElementById('door-leaf');
+      const knockSfx = document.getElementById('knock-sfx');
+      const dialogueBox = document.getElementById('dialogue-box');
+
+      setTimeout(() => {
+        panoramic.style.transform = "scale(2.2) translateY(-40px)";
+        panoramic.style.opacity = "0";
+      }, 1200);
+
+      setTimeout(() => {
+        panoramic.style.display = "none";
+        doorScene.style.opacity = "1";
+        knockSfx.style.opacity = "1";
+        knockSfx.style.transform = "scale(1)";
+      }, 1800);
+
+      setTimeout(() => {
+        knockSfx.style.display = "none";
+        doorLeaf.style.transform = "perspective(800px) rotateY(-80deg)";
+      }, 2600);
+
+      setTimeout(() => {
+        dialogueBox.style.opacity = "1";
+        dialogueBox.style.transform = "translateY(0)";
+      }, 3300);
+
+      setTimeout(() => {
+        finishSplash();
+      }, 4300);
+    }
+
+    function finishSplash() {
+      const splash = document.getElementById('splash-layer');
+      splash.style.opacity = '0';
+      setTimeout(() => { splash.style.display = 'none'; }, 600);
+    }
+
+    function replaySplash() {
+      closeModal('settings-modal');
+      const splash = document.getElementById('splash-layer');
+      splash.style.display = 'flex';
+      splash.style.opacity = '1';
+      document.getElementById('panoramic-scene').style.display = 'block';
+      document.getElementById('panoramic-scene').style.transform = 'scale(1)';
+      document.getElementById('panoramic-scene').style.opacity = '1';
+      document.getElementById('door-scene').style.opacity = '0';
+      document.getElementById('door-leaf').style.transform = 'none';
+      document.getElementById('knock-sfx').style.display = 'block';
+      document.getElementById('knock-sfx').style.opacity = '0';
+      document.getElementById('dialogue-box').style.opacity = '0';
+      runSplashAnimation();
+    }
+
+    function initApp() {
+      updateUserUI();
+      updateModeUI();
+      renderSubFilters();
+      renderCards();
+      runSplashAnimation();
+    }
+
+    function setVersionMode(mode) {
+      versionMode = mode;
+      localStorage.setItem('conan_ver_mode', mode);
+      updateModeUI();
+      renderCards();
+      closeModal('settings-modal');
+    }
+
+    function updateModeUI() {
+      document.getElementById('btn-mode-cn').classList.toggle('active', versionMode === 'cn');
+      document.getElementById('btn-mode-jp').classList.toggle('active', versionMode === 'jp');
+      document.getElementById('current-mode-label').textContent = 
+        versionMode === 'cn' ? '国内平台拆分版 (优酷/爱奇艺/腾讯)' : '日本本地原版 (官方放送/合并篇)';
+    }
+
+    function switchPrimaryTab(tab) {
+      currentPrimaryTab = tab;
+      currentSubFilter = '全部';
+      document.getElementById('tab-movies').classList.toggle('active', tab === 'movies');
+      document.getElementById('tab-tv').classList.toggle('active', tab === 'tv');
+      renderSubFilters();
+      renderCards();
+    }
+
+    function renderSubFilters() {
+      const container = document.getElementById('sub-filters');
+      container.innerHTML = '';
+      
+      let tags = [];
+      if (currentPrimaryTab === 'movies') {
+        tags = ['全部', '硬核推理', '大动作', '新兰羁绊', '怪盗基德', '黑衣组织'];
+      } else {
+        tags = ['全部', '神回硬核', '黑衣组织主线', '世良·赤井家族', '新兰恋爱'];
+      }
+
+      tags.forEach(t => {
+        const pill = document.createElement('div');
+        pill.className = `filter-pill ${currentSubFilter === t ? 'active' : ''}`;
+        pill.textContent = t;
+        pill.onclick = () => {
+          currentSubFilter = t;
+          renderSubFilters();
+          renderCards();
+        };
+        container.appendChild(pill);
+      });
+    }
+
+    function renderCards() {
+      const container = document.getElementById('cards-container');
+      container.innerHTML = '';
+
+      const query = document.getElementById('global-search').value.trim().toLowerCase();
+      const dataset = currentPrimaryTab === 'movies' ? MOVIES_DATABASE : TV_DATABASE;
+
+      const filtered = dataset.filter(item => {
+        const itemData = versionMode === 'cn' ? item.cn : item.jp;
+        if (currentSubFilter !== '全部' && item.tag !== currentSubFilter) return false;
+        if (query) {
+          const matchTitle = itemData.title.toLowerCase().includes(query);
+          const matchDesc = itemData.desc.toLowerCase().includes(query);
+          const matchSearchKeys = itemData.searchKeys ? itemData.searchKeys.toLowerCase().includes(query) : false;
+          const matchId = item.id.toLowerCase().includes(query);
+          return matchTitle || matchDesc || matchSearchKeys || matchId;
+        }
+        return true;
+      });
+
+      filtered.forEach(item => {
+        const isSolved = solvedRecords.has(item.id);
+        const itemData = versionMode === 'cn' ? item.cn : item.jp;
+        const displayCode = currentPrimaryTab === 'movies' ? item.id : itemData.epDisplay;
+
+        const card = document.createElement('div');
+        card.className = `card ${isSolved ? 'unlocked' : 'locked'}`;
+
+        card.innerHTML = `
+          <div class="card-head">
+            <span class="card-id">${displayCode}</span>
+            <button class="stamp-btn" onclick="toggleSolve('${item.id}', event)">
+              ${isSolved ? '⭐ 已侦破' : '🔒 待打卡'}
+            </button>
+          </div>
+          <div class="card-title">${itemData.title}</div>
+          <div class="card-meta-line">
+            <span class="tag-badge">${item.tag}</span>
+            <span class="platform-badge">${itemData.platform}</span>
+            <span class="rating-val">★ ${item.rating}</span>
+          </div>
+          <div class="desc-toggle" onclick="toggleDesc(this)">
+            <span>剧情案卷简述</span>
+            <span class="arrow">▼</span>
+          </div>
+          <div class="desc-content">${itemData.desc}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function toggleDesc(elem) {
+      const content = elem.nextElementSibling;
+      const isOpen = content.style.display === 'block';
+      content.style.display = isOpen ? 'none' : 'block';
+      elem.querySelector('.arrow').textContent = isOpen ? '▼' : '▲';
+    }
+
+    function toggleSolve(id, e) {
+      e.stopPropagation();
+      if (!currentUser) {
+        alert("【名探侦档案拦截】\n请先点击右上角名片头像登记侦探代号，才可记录并管理破案进度！");
+        openModal('user-modal');
+        return;
+      }
+
+      if (solvedRecords.has(id)) {
+        if (confirm("是否撤回该案卷的打卡记录？")) {
+          solvedRecords.delete(id);
+        }
+      } else {
+        solvedRecords.add(id);
+      }
+
+      localStorage.setItem('conan_solved_cases', JSON.stringify([...solvedRecords]));
+      renderCards();
+      updateUserUI();
+    }
+
+    function handleLogin() {
+      const name = document.getElementById('username-input').value.trim();
+      if (!name) {
+        alert("请输入侦探代号！");
+        return;
+      }
+
+      const fileInput = document.getElementById('avatar-file');
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          saveUser(name, e.target.result);
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        saveUser(name, null);
+      }
+    }
+
+    function saveUser(name, avatarUrl) {
+      currentUser = { name, avatarUrl };
+      localStorage.setItem('conan_user_profile', JSON.stringify(currentUser));
+      updateUserUI();
+      closeModal('user-modal');
+      renderCards();
+    }
+
+    function handleLogout() {
+      if (confirm("确定要退出侦探档案吗？打卡记录将妥善保存在本地。")) {
+        currentUser = null;
+        localStorage.removeItem('conan_user_profile');
+        updateUserUI();
+        closeModal('user-modal');
+        renderCards();
+      }
+    }
+
+    function updateUserUI() {
+      const avatarBtn = document.getElementById('header-avatar');
+      const formArea = document.getElementById('login-form-area');
+      const profileArea = document.getElementById('profile-area');
+      const solvedCount = document.getElementById('user-solved-count');
+
+      solvedCount.textContent = solvedRecords.size;
+
+      if (currentUser) {
+        if (currentUser.avatarUrl) {
+          avatarBtn.innerHTML = `<img src="${currentUser.avatarUrl}">`;
+        } else {
+          avatarBtn.textContent = '👓';
+        }
+        formArea.style.display = 'none';
+        profileArea.style.display = 'block';
+        document.getElementById('profile-name-display').textContent = currentUser.name;
+        document.getElementById('profile-avatar-preview').innerHTML = currentUser.avatarUrl ? 
+          `<img src="${currentUser.avatarUrl}" style="width:100%;height:100%;object-fit:cover;">` : '👓';
+      } else {
+        avatarBtn.innerHTML = '👤';
+        formArea.style.display = 'block';
+        profileArea.style.display = 'none';
+      }
+    }
+
+    function handleSearch() {
+      renderCards();
+    }
+
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function openFeedback() {
+      window.location.href = "mailto:detective_mouri@example.com?subject=【柯南打卡墙意见反馈】&body=请在此写下你对案卷集数或功能的建议：";
+    }
+
+    function exportData() {
+      const dataStr = JSON.stringify({
+        user: currentUser,
+        mode: versionMode,
+        solved: [...solvedRecords]
+      });
+      prompt("请复制保存下方的打卡档案凭条：", dataStr);
+    }
+
+    function clearAllData() {
+      if (confirm("危险操作：确定清空全部打卡进度吗？此操作无法撤销。")) {
+        solvedRecords.clear();
+        localStorage.removeItem('conan_solved_cases');
+        renderCards();
+        updateUserUI();
+      }
+    }
+
+    window.onload = initApp;
+  </script>
+</body>
+</html>
